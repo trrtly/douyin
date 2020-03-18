@@ -22,4 +22,7 @@ type Context struct {
 
 	//accessTokenLock 读写锁 同一个Appid一个
 	accessTokenLock *sync.RWMutex
+
+	//accessTokenFunc 自定义获取 access token 的方法
+	accessTokenFunc GetAccessTokenFunc
 }
