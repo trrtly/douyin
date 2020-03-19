@@ -59,7 +59,7 @@ func (ctx *Context) GetAccessToken() (accessToken string, err error) {
 	return
 }
 
-//GetAccessTokenFromServer 强制从微信服务器获取token
+//GetAccessTokenFromServer 强制获取 access token
 func (ctx *Context) GetAccessTokenFromServer() (resAccessToken ResAccessToken, err error) {
 	queryData := map[string]string{
 		"appid":      ctx.Appid,
