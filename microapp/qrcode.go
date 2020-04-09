@@ -50,7 +50,7 @@ type QRCodeParams struct {
 	// | douyin  | 抖音          |
 	// | pipixia | 皮皮虾         |
 	// | huoshan | 火山小视频      |
-	Appname string `json:"appname,omitempty"`
+	Appname  string      `json:"appname,omitempty"`
 
 	// 小程序/小游戏启动参数，小程序则格式为 encode({path}?{query})，
 	// 小游戏则格式为 JSON 字符串，默认为空
@@ -87,11 +87,10 @@ func (a AppnameType) String() string {
 // 该二维码可通过任意 app 扫码打开，能跳转到开发者指定的对应字节系 app 内拉起小程序/小游戏，
 // 并传入开发者指定的参数。通过该接口生成的二维码，永久有效，暂无数量限制。
 func (a *Microapp) FectQrCode(params *QRCodeParams) (response []byte, err error) {
-	accessToken, err := a.GetAccessToken()
+	params.AccessToken, err = a.GetAccessToken()
 	if err != nil {
 		return
 	}
-	params.AccessToken = accessToken
 
 	resp, err := request.PostJSON(createQRCodeURL, params)
 	if err != nil {
@@ -115,7 +114,7 @@ func (a *Microapp) FectQrCode(params *QRCodeParams) (response []byte, err error)
 			err = fmt.Errorf("fetchQrCode error : errcode=%v , errmsg=%v", result.Code, result.Msg)
 			return
 		}
-	} else if contentType == "image/jpeg" {
+	} else if contentType == "image/jpeg" || contentType == "image/png" {
 		response, err = ioutil.ReadAll(resp.Body)
 		return
 	} else {

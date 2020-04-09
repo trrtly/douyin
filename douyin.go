@@ -1,8 +1,16 @@
 package douyin
 
+import (
+	"sync"
+
+	"github.com/trrtly/douyin/cache"
+	"github.com/trrtly/douyin/context"
+	"github.com/trrtly/douyin/microapp"
+)
+
 // Douyin struct
 type Douyin struct {
-	*Config
+	Context *context.Context
 }
 
 // Config struct
@@ -11,9 +19,22 @@ type Config struct {
 	Appid string
 	// Secret 小程序的 APP Secret，可以在开发者后台获取
 	Secret string
+
+	Cache cache.Cache
 }
 
 // NewDouyin init
 func NewDouyin(c *Config) *Douyin {
-	return &Douyin{c}
+	contextObj := &context.Context{
+		Appid:  c.Appid,
+		Secret: c.Secret,
+		Cache:  c.Cache,
+	}
+	contextObj.SetAccessTokenLock(new(sync.RWMutex))
+	return &Douyin{Context: contextObj}
+}
+
+// GetMicroApp 获取小程序的实例
+func (d *Douyin) GetMicroApp() *microapp.Microapp {
+	return microapp.New(d.Context)
 }
